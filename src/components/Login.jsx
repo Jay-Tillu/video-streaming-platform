@@ -1,11 +1,26 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Header from "./Header";
+import { checkValidData } from "../utils/validate";
 
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+  const nameRef = useRef(null);
 
   const toggleSignIn = () => {
     setIsSignInForm(!isSignInForm);
+  };
+
+  const handleSignInButtonClick = () => {
+    const message = checkValidData(
+      emailRef.current.value,
+      passwordRef.current.value
+    );
+
+    setErrorMessage(message);
   };
 
   return (
@@ -24,28 +39,40 @@ const Login = () => {
 
       {/* Centered Form */}
       <div className="relative z-10 flex items-center justify-center h-full">
-        <form className="w-4/12 px-16 py-20 bg-black bg-opacity-75 rounded-lg shadow-lg">
+        <form
+          onSubmit={(e) => e.preventDefault()}
+          className="w-4/12 px-16 py-20 bg-black bg-opacity-75 rounded-lg shadow-lg"
+        >
           <h1 className="text-white text-3xl font-semibold pb-8">
             {isSignInForm ? "Sign In" : "Sign up"}
           </h1>
           {!isSignInForm && (
             <input
+              ref={nameRef}
               type="text"
               placeholder="Full Name"
               className="w-full px-4 py-3 mb-4 text-stone-200 placeholder-stone-200 bg-black opacity-70 rounded border-stone-400 border focus:outline-none focus:ring focus:ring-stone-500"
             />
           )}
           <input
+            ref={emailRef}
             type="text"
             placeholder="Email Address"
             className="w-full px-4 py-3 mb-4 text-stone-200 placeholder-stone-200 bg-black opacity-70 rounded border-stone-400 border focus:outline-none focus:ring focus:ring-stone-500"
           />
           <input
+            ref={passwordRef}
             type="password"
             placeholder="Password"
             className="w-full px-4 py-3 mb-4 text-stone-200 placeholder-stone-200 bg-black opacity-70 rounded border-stone-400 border focus:outline-none focus:ring focus:ring-stone-500"
           />
-          <button className="w-full py-2 text-white bg-[#E50815] rounded hover:bg-red-800 transition">
+
+          <p className="text-red-500 mb-5 font-semibold">{errorMessage}</p>
+
+          <button
+            className="w-full py-2 text-white bg-[#E50815] rounded hover:bg-red-800 transition"
+            onClick={handleSignInButtonClick}
+          >
             {isSignInForm ? "Sign In" : "Sign up"}
           </button>
 
